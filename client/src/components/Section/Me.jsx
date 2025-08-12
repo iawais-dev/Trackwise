@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { me, updateUser, verifyPassword } from '../../services/authServices';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function Me() {
   const { id } = useParams();
@@ -41,11 +42,11 @@ function Me() {
       const res = await verifyPassword(id, oldpassword);
       if (res.data.success) {
         setIsSuccess(true);
-        alert('Password verified');
+        toast.success('password verified')
         setPasswordCheck(false);
       } else {
         setIsSuccess(false);
-        alert('Password not verified');
+        toast.success('password not verified')
       }
     } catch (error) {
       console.log('Error verifying password', error);
@@ -55,7 +56,7 @@ function Me() {
   const handleUpdate = async () => {
     try {
       await updateUser(id, form);
-      alert('Changes saved');
+      toast.success('Changes Updated')
       setEditable(false);
       setIsSuccess(false);
       setForm({ ...form, password: '' });

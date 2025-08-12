@@ -4,6 +4,7 @@ import { logoutUser, me } from '../../services/authServices';
 
 const DashboardComp = () => {
   const [username, setUserName] = useState('');
+  const [userId, setUserId] = useState('')
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -11,6 +12,7 @@ const DashboardComp = () => {
       try {
         const res = await me();
         setUserName(res.data.username);
+        setUserId(res.data._id)
       } catch (error) {
         console.log(error);
       }
@@ -48,7 +50,7 @@ const DashboardComp = () => {
             </div>
           </Link>
 
-          <Link to="/user/:id">
+          <Link to={`/user/${userId}`}>
             <div className="h-40 bg-white/10 border border-white/20 backdrop-blur-lg rounded-2xl p-6 shadow-md hover:shadow-xl hover:border-indigo-400 transition duration-300 flex flex-col space-y-3">
               <h2 className="text-xl font-semibold">Profile Settings</h2>
               <p className="text-sm text-slate-300">Update your account details and preferences.</p>
