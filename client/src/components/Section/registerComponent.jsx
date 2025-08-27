@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signupUser } from "../../services/authServices.js";
 import { toast } from "react-toastify";
+import {useForm} from 'react-hook-form'
 
 const Signup = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm()
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      const res = await signupUser({ username, email, password });
+      const res = await signupUser(data);
       toast.success("user created");
       navigate("/dashboard");
     } catch (error) {
@@ -30,38 +32,40 @@ const Signup = () => {
           <p className="text-sm text-white/70 mt-1">Join us and start your journey</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="block text-white/90 text-sm mb-1">Username</label>
             <input
               type="text"
-              name="username"
+              {...register("username",{required:"username is required"})}
               placeholder="yourname"
-              onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-2 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white"
             />
+            {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>}
           </div>
 
           <div>
             <label className="block text-white/90 text-sm mb-1">Email</label>
             <input
               type="email"
-              name="email"
+              {...register("email",{required:"email is required"})}
               placeholder="you@example.com"
-              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white"
             />
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+
           </div>
 
           <div>
             <label className="block text-white/90 text-sm mb-1">Password</label>
             <input
               type="password"
-              name="password"
+              {...register("password",{required:"password is required"})}
               placeholder="********"
-              onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white"
             />
+            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+
           </div>
 
           <button

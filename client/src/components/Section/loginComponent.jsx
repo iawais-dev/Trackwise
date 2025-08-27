@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/authServices";
 import { toast } from "react-toastify";
+import {useForm} from 'react-hook-form'
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -9,10 +10,11 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const {handleSubmit,register,formState:{errors}} = useForm()
+
+  const onSubmit = async (data) => {
     try {
-      const res = await loginUser({ email, password });
+      const res = await loginUser(data);
       toast.success("user is loggedIn");
       navigate("/dashboard");
     } catch (error) {
@@ -29,15 +31,16 @@ const Login = () => {
           <p className="text-sm text-white/70 mt-1">Welcome back, please login</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="block text-white/90 text-sm mb-1">Email</label>
             <input
               type="email"
               placeholder="you@example.com"
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email",{required:"email is required"})}
               className="w-full px-4 py-2 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white"
             />
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p> }
           </div>
 
           <div>
@@ -45,9 +48,10 @@ const Login = () => {
             <input
               type="password"
               placeholder="••••••••"
-              onChange={(e) => setPassword(e.target.value)}
+              {...register("password",{required:"password is required"})}
               className="w-full px-4 py-2 rounded-lg bg-white/10 text-white placeholder-white/70 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white"
             />
+            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p> }
           </div>
 
           <button

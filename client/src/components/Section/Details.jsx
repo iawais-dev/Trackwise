@@ -2,36 +2,61 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { detailSkill, deleteResource, updateSkill } from '../../services/skillServices';
 import { Pencil, Trash2 } from 'lucide-react';
+import { toast } from 'react-toastify';
+import { useForm } from 'react-hook-form'
 
 function Details() {
   const { id } = useParams();
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [skill, setSkill] = useState(null);
+  const [resources, setResources] = useState([])
+
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    status: '',
-    progress: 0,
-    isCompleted: false,
-    resources: [],
-  });
+
+  const { register, handleSubmit, watch, setValue, reset } = useForm({
+    defaultValues: {
+      status: 'Not Started',
+      progress: 0,
+      isCompleted: false
+    }
+  })
+
+  const status = watch('status')
+  const progress = watch('progress')
+  const isCompleted = watch('isCompleted')
 
   useEffect(() => {
-    if (form.status === 'Completed' && form.progress !== 100) {
-      setForm((prev) => ({ ...prev, progress: 100, isCompleted: true }));
-    } else if (form.status === 'In Progress' && form.progress === 100) {
-      setForm((prev) => ({ ...prev, progress: 50 }));
-    } else {
-      setForm((prev) => ({ ...prev, progress: 0 }));
+    if (status === 'Completed' && progress !== 100) {
+      setValue("progress", 100)
+      setValue("isCompleted", true)
+    } else if (status === 'In Progress' && progress === 100) {
+      setValue("progress", 50);
+    } 
+    else if(progress > 0 && progress < 100){
+      setValue('status',"In Progress")
     }
-  }, [form.status]);
+    else if(progress === 0){
+      setValue('status',"Not Started")
+    }
+    else if(progress > 99){
+      setValue('status',"Completed")
+    }
+    else {
+      setValue("progress", 0);
+    }
+  }, [status,progress]);
 
-  const handleSubmit = async () => {
+
+
+  const onSubmit = async (data) => {
     try {
-      await updateSkill(id, form);
-      alert('Updated successfully');
-      if (form.isCompleted) navigate('/skills');
+      const payload = { ...data, resources }
+      await updateSkill(id, payload);
+      toast.success("Updated successfully")
+      if (status === "Completed") navigate('/skills');
     } catch (error) {
       console.error(error);
       alert('Update failed');
@@ -44,11 +69,12 @@ function Details() {
         const res = await detailSkill(id);
         const data = res.data;
         setSkill(data);
-        setForm({
+        setResources(data)
+        reset({
           status: data.status || 'Not Started',
           progress: data.progress || 0,
-          resources: data.resources || [],
-        });
+          isCompleted: data.isCompleted || false
+        })
       } catch (error) {
         setError(error.message || 'Something went wrong');
       } finally {
@@ -58,17 +84,15 @@ function Details() {
     fetchSkill();
   }, [id]);
 
-  const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+
 
   const handleAddResource = () => {
     navigate(`/addresource/${id}`);
   };
 
   const handleResourceDelete = async (rid) => {
-    const updated = form.resources.filter((r) => r._id !== rid);
-    setForm((prev) => ({ ...prev, resources: updated }));
+    const updated = resources.filter((r) => r._id !== rid);
+    setResources(updated)
     await deleteResource(id, rid);
   };
 
@@ -99,59 +123,60 @@ function Details() {
           <p className="text-white/60 text-sm mb-4">Category: {skill.category}</p>
           <p className="text-white/80 mb-6">{skill.description}</p>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-white/70 text-sm mb-1">Status</label>
-              <select
-                name="status"
-                value={form.status}
-                onChange={handleChange}
-                className="w-full bg-white/10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                <option value="Not Started">Not Started</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
-              </select>
-            </div>
+          <form onSubmit={handleSubmit(onSubmit)} >
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-white/70 text-sm mb-1">Status</label>
+                <select
+                  name="status"
+                  {...register("status")}
+                  className="w-full bg-white/10 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option className='bg-gray-900' value="Not Started">Not Started</option>
+                  <option className='bg-gray-900' value="In Progress">In Progress</option>
+                  <option className='bg-gray-900' value="Completed">Completed</option>
+                </select>
+              </div>
 
-            <div>
-              <label className="block text-white/70 text-sm mb-1">Progress</label>
-              <input
-                name="progress"
-                disabled={form.status === 'Completed'}
-                type="range"
-                min="0"
-                max="100"
-                value={form.progress}
-                onChange={handleChange}
-                className="w-full accent-indigo-500"
-              />
-              <p className="text-sm text-white/60 mt-1">{form.progress}% complete</p>
+              <div>
+                <label className="block text-white/70 text-sm mb-1">Progress</label>
+                <input
+                  name="progress"
+                  disabled={status === 'Completed'}
+                  type="range"
+                  min="0"
+                  max="100"
+                  {...register("progress")}
+                  className="w-full accent-indigo-500"
+                />
+                <p className="text-sm text-white/60 mt-1">{progress}% complete</p>
+              </div>
             </div>
-          </div>
-
           <div className="flex justify-between mt-8">
-            <button
+            {/* <button
               onClick={handleAddResource}
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
             >
               + Add Resource
-            </button>
+            </button> */}
             <button
-              onClick={handleSubmit}
+              type='submit'
               className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg"
             >
               Save Progress
             </button>
           </div>
+
+          </form>
+
         </div>
 
         {/* Resource Section */}
         <div className="bg-white/5 border border-white/10 backdrop-blur-md p-8 rounded-2xl shadow-lg">
           <h2 className="text-2xl font-semibold mb-4">Resources</h2>
-          {form.resources.length > 0 ? (
+          {resources.length > 0 ? (
             <div className="space-y-4">
-              {form.resources.map((res, i) => (
+              {resources.map((res, i) => (
                 <div
                   key={i}
                   className="bg-white/10 p-4 rounded-xl flex justify-between items-start"

@@ -11,7 +11,6 @@ const skillSchema = new mongoose.Schema({
     },
     description:{
         type:String,
-        required:true
     },
     category:{
         type:String,
@@ -31,9 +30,9 @@ const skillSchema = new mongoose.Schema({
     resources:[{
         title:String,
         link:String,
-        tag:String,
+        // tag:String,
         notes:String
     }]
-})  
+},{timestamps:true})  
 
 export const SkillModel = mongoose.model("SkillModel",skillSchema)

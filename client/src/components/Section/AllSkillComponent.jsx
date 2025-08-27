@@ -74,7 +74,7 @@ function AllSkillComponent() {
 
         {/* Heading */}
         <div className="text-center mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-2">All Your Skills</h1>
+          <h1 className="text-3xl sm:text-4xl lg:text-7xl font-bold mb-2 mt-10 md:mt-0">All Your Skills</h1>
           <div className="w-24 h-1 bg-indigo-500 mx-auto rounded-full"></div>
         </div>
 
@@ -121,17 +121,22 @@ function AllSkillComponent() {
 
 
         {/* Skill List */}
-        {skills.length > 0 ? (
+        {skills.length  > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSkills.map((skill, index) => (
+            {filteredSkills
+            .sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt))
+            .map((skill, index) => (
               <SkillCard key={index} skill={skill} onDelete={handleDelete} />
             ))}
           </div>
         ) : (
-          <div className="text-center mt-20 text-white/60 text-lg">
+          <div className=" text-white/60 absolute top-1/2 left-1/2 font-semibold text-2xl md:text-5xl -translate-1/2  ">
             You haven’t added any skills yet.
           </div>
         )}
+        {
+          filteredSkills.length === 0 && skills.length >0 ? <div className="absolute top-1/2 left-1/2 font-semibold text-2xl md:text-5xl -translate-1/2">No skills found.</div> : null
+        }
       </div>
     </div>
   )

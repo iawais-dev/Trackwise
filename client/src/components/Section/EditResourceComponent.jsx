@@ -4,9 +4,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 function EditResourceComponent() {
-  const {id} = useParams()
+  const { id } = useParams()
 
   const Query = new URLSearchParams(location.search)
   const resourceId = Query.get('resourceId')
@@ -14,7 +15,7 @@ function EditResourceComponent() {
   const navigate = useNavigate()
 
 
-  const [resource,setResource] =useState(null)
+  const [resource, setResource] = useState(null)
 
 
   const {
@@ -22,46 +23,53 @@ function EditResourceComponent() {
     handleSubmit,
     formState: { errors },
     reset
-  } = useForm({defaultValues:resource});
+  } = useForm({ defaultValues: resource });
 
-  useEffect(()=>{
-       const fetchDetails = async()=>{
-        const res =await detailSkill(id)
-        const matched = res.data.resources.find(r=>r._id === resourceId)
-        setResource(matched)
-        reset(matched)
-        
-        console.log(res.data)
-        console.log('usestate',resource)
-       }
-       fetchDetails()
+  useEffect(() => {
+    const fetchDetails = async () => {
+      const res = await detailSkill(id)
+      const matched = res.data.resources.find(r => r._id === resourceId)
+      setResource(matched)
+      reset(matched)
 
-  },[id])
+      console.log(res.data)
+      console.log('usestate', resource)
+    }
+    fetchDetails()
+
+  }, [id])
 
   const onsubmit = async (data) => {
 
-    const container ={...data,resourceId}
+    const container = { ...data, resourceId }
     try {
-        const res = await editResource(id,container)
+      if (JSON.stringify(data) === JSON.stringify(resource)) {
+        toast.error("Nothing Changed")
+      }
+      else {
+        const res = await editResource(id, container)
+        toast.success("Resource updated successfully")
         navigate(`/skill/${id}`)
-        console.log('response',res)
+        console.log('response', res)
+      }
     } catch (error) {
-        navigate(`/skill/${id}`)
+      navigate(`/skill/${id}`)
 
-        console.log(error)
+      console.log(error)
     }
     console.log('form data', data);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Edit a Resource</h2>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-gray-800 flex items-center justify-center bg-gray-100">
+      <div className="text-white p-8 bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl shadow-md w-full max-w-lg">
+        <h2 className="text-2xl font-bold mb-6  text-center">Edit a Resource</h2>
 
         <form onSubmit={handleSubmit(onsubmit)} className="space-y-4">
+
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Title</label>
+            <label className="block text-sm font-medium text-white/80">Title</label>
             <input
               type="text"
               {...register('title')}
@@ -70,20 +78,9 @@ function EditResourceComponent() {
             {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
           </div>
 
-          {/* Tag */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Tag</label>
-            <input
-              type="text"
-              {...register('tag')}
-              className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.tag && <p className="text-red-500 text-sm">{errors.tag.message}</p>}
-          </div>
-
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Notes</label>
+            <label className="block text-sm font-medium text-white/80">Notes</label>
             <input
               type="text"
               {...register('notes')}
@@ -94,7 +91,7 @@ function EditResourceComponent() {
 
           {/* Link */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Link</label>
+            <label className="block text-sm font-medium text-white/80">Link</label>
             <input
               type="url"
               {...register('link', {

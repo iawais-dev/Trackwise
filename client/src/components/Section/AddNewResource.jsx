@@ -41,18 +41,6 @@ function AddNewResource() {
             {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
           </div>
 
-          {/* Tag */}
-          <div>
-            <label className="block text-white/80 text-sm mb-1">Tag</label>
-            <input
-              type="text"
-              {...register('tag', { required: 'Tag is required' })}
-              placeholder="Resource tag"
-              className="w-full px-4 py-2 bg-white/10 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            />
-            {errors.tag && <p className="text-red-500 text-sm mt-1">{errors.tag.message}</p>}
-          </div>
-
           {/* Notes */}
           <div>
             <label className="block text-white/80 text-sm mb-1">Notes</label>
