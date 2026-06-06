@@ -15,7 +15,7 @@ const app = express()
 ConnectDb()
 
 app.use(cors({
-    origin:"https://trackwise-five.vercel.app/",
+    origin:"https://trackwise-five.vercel.app",
     credentials:true
 }))
 app.use(express.json())

@@ -26,7 +26,7 @@ export const signUp = async (req,res)=>{
                //Setting token in cookie
             res.cookie("token",token,{
                 httpOnly:true, //save access from js
-                sameSite:"strict",
+                sameSite:"none",
                 maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
                 secure:true, //for production not development
             })
@@ -60,7 +60,7 @@ export const Login = async (req,res)=>{
                 httpOnly:true,
                 secure:true,
                 maxAge:24*60*60*1000,
-                sameSite:"strict"
+                sameSite:"none"
             })
             res.status(200).json({message:"loggedIn"})
         }
