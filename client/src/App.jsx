@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/login.jsx'
 import Dashboard from './pages/Dashboard.jsx';
 import Register from './pages/register.jsx'
-import ProtectedRoute from './components/Route/protectedRoute.jsx';
+import ProtectedRoute from './components/Route/ProtectedRoute.jsx';
 import SkillView from './pages/SkillView.jsx';
 import DetailSkill from './pages/DetailSkill.jsx';
 import EditSkill from './components/Section/EditSkill.jsx';
