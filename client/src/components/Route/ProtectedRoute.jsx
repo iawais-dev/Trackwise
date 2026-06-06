@@ -1,6 +1,7 @@
-import axios from 'axios'
-import React, { Children, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
+import { me } from '../../services/authServices'
+import Navbar from '../Navbar'
 
 function ProtectedRoute({children}) {
     let [loading, setLoading] = useState(true)
@@ -9,11 +10,9 @@ function ProtectedRoute({children}) {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                let res = await axios.get('http://localhost:3000/api/user/dashboard', {
-                    withCredentials: true //must
-                })
+                await me()
                 setAuth(true)
-            } catch (error) {
+            } catch {
                 setAuth(false)
             }
             finally {
@@ -30,7 +29,12 @@ else if(!auth){
    return <Navigate to='/register'/>
 }
 else{
-    return children
+    return (
+      <>
+        <Navbar />
+        {children}
+      </>
+    )
 }
 }
 

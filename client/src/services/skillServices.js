@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const Api = axios.create({
-    baseURL:'http://localhost:3000/api/skill',
+    baseURL:`${import.meta.env.VITE_API_URL}/api/skill`,
     withCredentials:true
 })
 

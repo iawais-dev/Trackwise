@@ -110,7 +110,7 @@ export const verifyPassword = async (req,res)=>{
            res.status(200).json({success: false, message:'password not verified'})
     }
   } catch (error) {
-    console.log(error)
+    console.error(error)
     res.status(400).json({message:error})
   }
 }
@@ -137,7 +137,7 @@ export const updateUser = async(req,res)=>{
      },{new:true})
      res.status(200).json({user})
     } catch (error) {
-      console.log(error)
+      console.error(error)
       res.status(404).json({message:"user not found"})
     }
 
@@ -153,7 +153,7 @@ export const updateUser = async(req,res)=>{
      },{new:true})
      res.status(200).json({user})
     } catch (error) {
-      console.log(error)
+      console.error(error)
       res.status(404).json({message:"user not found"})
     }
   }

@@ -14,9 +14,7 @@ function EditResourceComponent() {
 
   const navigate = useNavigate()
 
-
   const [resource, setResource] = useState(null)
-
 
   const {
     register,
@@ -31,85 +29,73 @@ function EditResourceComponent() {
       const matched = res.data.resources.find(r => r._id === resourceId)
       setResource(matched)
       reset(matched)
-
-      console.log(res.data)
-      console.log('usestate', resource)
     }
     fetchDetails()
-
   }, [id])
 
   const onsubmit = async (data) => {
-
     const container = { ...data, resourceId }
     try {
       if (JSON.stringify(data) === JSON.stringify(resource)) {
         toast.error("Nothing Changed")
       }
       else {
-        const res = await editResource(id, container)
+        await editResource(id, container)
         toast.success("Resource updated successfully")
         navigate(`/skill/${id}`)
-        console.log('response', res)
       }
-    } catch (error) {
+    } catch {
       navigate(`/skill/${id}`)
-
-      console.log(error)
     }
-    console.log('form data', data);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-gray-800 flex items-center justify-center bg-gray-100">
-      <div className="text-white p-8 bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl shadow-md w-full max-w-lg">
-        <h2 className="text-2xl font-bold mb-6  text-center">Edit a Resource</h2>
+    <div className="min-h-screen bg-orange-50 flex items-center justify-center px-4 py-12">
+      <div className="bg-white border border-orange-100 p-8 rounded-2xl shadow-sm w-full max-w-lg">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Edit Resource</h2>
 
         <form onSubmit={handleSubmit(onsubmit)} className="space-y-4">
 
-          {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-white/80">Title</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
             <input
               type="text"
               {...register('title')}
-              className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
             {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
           </div>
 
-          {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-white/80">Notes</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
             <input
               type="text"
               {...register('notes')}
-              className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
             {errors.notes && <p className="text-red-500 text-sm">{errors.notes.message}</p>}
           </div>
 
-          {/* Link */}
           <div>
-            <label className="block text-sm font-medium text-white/80">Link</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Link</label>
             <input
               type="url"
               {...register('link', {
                 pattern: {
-                  value: /^(https?:\/\/)?[\w\-]+(\.[\w\-]+)+[/#?]?.*$/,
+                  value: /^(https?:\/\/)?[\w-]+(\.[\w-]+)+[/#?]?.*$/,
                   message: 'Enter a valid URL',
                 },
               })}
-              className="mt-1 w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
             />
             {errors.link && <p className="text-red-500 text-sm">{errors.link.message}</p>}
           </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg transition font-semibold"
           >
-            Edit Resource
+            Save Changes
           </button>
         </form>
       </div>

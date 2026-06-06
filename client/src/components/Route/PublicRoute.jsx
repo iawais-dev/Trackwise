@@ -24,8 +24,7 @@ function PublicRoute({children}) {
                 else{
                     setLoading(false)
                 }
-            } catch (error) {
-                console.log(error)
+            } catch {
                 setLoading(false)
             }
          }

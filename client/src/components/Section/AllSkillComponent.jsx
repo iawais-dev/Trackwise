@@ -45,7 +45,6 @@ function AllSkillComponent() {
       toast.success('Successfully Deleted')
     } catch (error) {
       console.error('Error deleting skill:', error)
-      // toast.error('Something went Wrong')
     }
   }
 
@@ -55,88 +54,100 @@ function AllSkillComponent() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 to-gray-800 text-white">
+      <div className="flex justify-center items-center min-h-screen bg-orange-50 text-gray-500">
         <div className="text-xl animate-pulse">Loading your skills...</div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-gray-800 py-12 px-4 text-white">
+    <div className="min-h-screen bg-orange-50 py-10 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Add Skill Button */}
-        <div
-          className="bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 w-12 h-12 text-white cursor-pointer flex items-center justify-center rounded-full absolute right-6 top-6 transition"
-          onClick={handleAddSkill}
-        >
-          <PlusCircleIcon />
-        </div>
 
-        {/* Heading */}
-        <div className="text-center mb-10">
-          <h1 className="text-3xl sm:text-4xl lg:text-7xl font-bold mb-2 mt-10 md:mt-0">All Your Skills</h1>
-          <div className="w-24 h-1 bg-indigo-500 mx-auto rounded-full"></div>
-        </div>
-
-        {/* Floating Filter Button */}
-        <div
-          onClick={() => setShowCategory(!showCategory)}
-          className="bg-white/10 hover:bg-white/20 border border-white/20 
-             backdrop-blur rounded-full w-12 h-12 flex items-center 
-             justify-center cursor-pointer absolute right-20 top-6 
-             transition"
-          title="Filter skills by category"
-        >
-          <Filter className="text-white" size={20} />
-        </div>
-
-        {/* Dropdown Menu */}
-        {showCategory && (
-          <div className="absolute right-20 top-20 bg-gray-800/90 backdrop-blur 
-                  border border-white/10 rounded-xl shadow-lg p-3">
-            <p className="text-sm text-gray-300 mb-2">Choose a category:</p>
-            <select
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-gray-700 text-white p-2 rounded-lg w-48 outline-none"
-            >
-              <option value="All">All</option>
-              {Array.from(new Set(skills.map(s => s.category))).map((category, idx) => (
-                <option key={idx} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-            <p className="text-sm text-gray-300 my-2">Choose a Status:</p>
-            <select
-              onChange={(e) => setStatus(e.target.value)}
-              className="bg-gray-700 text-white p-2 rounded-lg w-48 outline-none"
-            >
-              <option value="">All</option>
-              <option value="Not Started">Not Started</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Completed">Completed</option>
-            </select>
+        {/* Header row */}
+        <div className="flex items-center justify-between mb-10">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">All Your Skills</h1>
+            <div className="w-16 h-1 bg-orange-500 rounded-full mt-2"></div>
           </div>
-        )}
 
+          <div className="flex items-center gap-3">
+            {/* Filter toggle */}
+            <div className="relative">
+              <button
+                onClick={() => setShowCategory(!showCategory)}
+                className="bg-white hover:bg-orange-50 border border-orange-100 rounded-full w-10 h-10 flex items-center justify-center transition text-gray-600 shadow-sm"
+                title="Filter skills"
+              >
+                <Filter size={18} />
+              </button>
 
-        {/* Skill List */}
-        {skills.length  > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSkills
-            .sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt))
-            .map((skill, index) => (
-              <SkillCard key={index} skill={skill} onDelete={handleDelete} />
-            ))}
+              {showCategory && (
+                <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-10 w-52">
+                  <p className="text-xs text-gray-400 mb-1 uppercase tracking-wide">Category</p>
+                  <select
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="bg-white border border-gray-200 text-gray-900 p-2 rounded-lg w-full outline-none mb-3 text-sm focus:ring-2 focus:ring-orange-400"
+                  >
+                    <option value="All">All</option>
+                    {Array.from(new Set(skills.map(s => s.category))).map((category, idx) => (
+                      <option key={idx} value={category}>{category}</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-400 mb-1 uppercase tracking-wide">Status</p>
+                  <select
+                    onChange={(e) => setStatus(e.target.value)}
+                    className="bg-white border border-gray-200 text-gray-900 p-2 rounded-lg w-full outline-none text-sm focus:ring-2 focus:ring-orange-400"
+                  >
+                    <option value="">All</option>
+                    <option value="Not Started">Not Started</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
+              )}
+            </div>
+
+            {/* Add skill */}
+            <button
+              onClick={handleAddSkill}
+              className="bg-white hover:bg-orange-50 border border-orange-100 rounded-full w-10 h-10 flex items-center justify-center transition text-gray-600 shadow-sm"
+              title="Add new skill"
+            >
+              <PlusCircleIcon size={20} />
+            </button>
           </div>
+        </div>
+
+        {/* Skill grid */}
+        {skills.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredSkills
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .map((skill, index) => (
+                  <SkillCard key={index} skill={skill} onDelete={handleDelete} />
+                ))}
+            </div>
+            {filteredSkills.length === 0 && (
+              <div className="flex justify-center py-20 text-gray-400 text-xl font-medium">
+                No skills match your filters.
+              </div>
+            )}
+          </>
         ) : (
-          <div className=" text-white/60 absolute top-1/2 left-1/2 font-semibold text-2xl md:text-5xl -translate-1/2  ">
-            You haven’t added any skills yet.
+          <div className="flex flex-col items-center justify-center py-32 text-gray-400">
+            <p className="text-2xl font-semibold mb-4">No skills yet</p>
+            <p className="text-sm mb-6">Start tracking your learning by adding your first skill.</p>
+            <button
+              onClick={handleAddSkill}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg text-sm transition"
+            >
+              Add your first skill
+            </button>
           </div>
         )}
-        {
-          filteredSkills.length === 0 && skills.length >0 ? <div className="absolute top-1/2 left-1/2 font-semibold text-2xl md:text-5xl -translate-1/2">No skills found.</div> : null
-        }
+
       </div>
     </div>
   )

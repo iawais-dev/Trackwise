@@ -30,7 +30,6 @@ const skillSchema = new mongoose.Schema({
     resources:[{
         title:String,
         link:String,
-        // tag:String,
         notes:String
     }]
 },{timestamps:true})  

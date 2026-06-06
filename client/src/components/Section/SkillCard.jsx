@@ -10,8 +10,8 @@ const SkillCard = ({ skill, onDelete }) => {
   'Not Started': 'Not Started'
 };
   return (
-    <div className="flex flex-col justify-between w-[300px] md:w-[350px] lg:w-[300px] h-80 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-5 border mx-auto">
-      
+    <div className="flex flex-col justify-between w-full h-64 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-5 border border-orange-100">
+
       {/* Top Section */}
       <div>
         <p
@@ -28,17 +28,33 @@ const SkillCard = ({ skill, onDelete }) => {
   {statusLabels[skill.status] || 'Unknown'}
 </p>
 
-        
+
         <h2 className="text-xl font-semibold text-gray-800 mb-1 truncate">{skill.title}</h2>
-        <span className="text-sm text-indigo-500 font-medium">{skill.category}</span>
-        <p className="text-gray-600 text-sm mt-3 line-clamp-4">
+        <span className="text-sm text-orange-500 font-medium">{skill.category}</span>
+        <p className="text-gray-500 text-sm mt-1 line-clamp-2">
           {skill.description}
         </p>
+
+        <div className="mt-3">
+          <div className="flex justify-between text-xs text-gray-400 mb-1">
+            <span>Progress</span>
+            <span>{skill.progress}%</span>
+          </div>
+          <div className="w-full bg-gray-100 rounded-full h-1.5">
+            <div
+              className={`h-1.5 rounded-full transition-all ${
+                skill.status === 'Completed' ? 'bg-green-500' :
+                skill.status === 'In Progress' ? 'bg-yellow-400' : 'bg-gray-300'
+              }`}
+              style={{ width: `${skill.progress}%` }}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Bottom Buttons */}
       <div className="flex justify-between items-center mt-4">
-        <Link to={`/skill/${skill._id}`} className="text-indigo-600 hover:text-indigo-800" title="View Details">
+        <Link to={`/skill/${skill._id}`} className="text-orange-500 hover:text-orange-700" title="View Details">
           <FiEye size={20} />
         </Link>
 

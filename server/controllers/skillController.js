@@ -21,7 +21,7 @@ export const detailSkills = async (req, res) => {
 
             res.status(200).json(skill)
       } catch (error) {
-            console.log("error in detailSkill", error)
+            console.error("error in detailSkill", error)
             res.status(500).json({ message: error.message })
       }
 
@@ -63,7 +63,7 @@ export const editSkill = async (req, res) => {
             res.status(200).json(editedSkill)
 
       } catch (error) {
-            console.log('error in editing skill', error)
+            console.error('error in editing skill', error)
             res.status(500).json({ message: error.message })
       }
 
@@ -86,7 +86,7 @@ export const updateStatus = async (req, res) => {
 
             res.status(200).json(updatedSkill)
       } catch (error) {
-            console.log('error in updating skill', error)
+            console.error('error in updating skill', error)
             res.status(500).json({ message: error.message })
       }
 }
@@ -103,7 +103,7 @@ export const deleteSkill = async (req, res) => {
 
             res.status(200).json({ message: 'skill deleted Successfully' })
       } catch (error) {
-            console.log('error in deleting skill', error)
+            console.error('error in deleting skill', error)
             res.status(500).json({ message: error.message })
       }
 
@@ -124,7 +124,7 @@ export const addResource = async (req, res) => {
             await skill.save()
             res.status(200).json({ resource })
       } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(400).json({ messgae: error })
       }
 }
@@ -145,7 +145,7 @@ export const deleteResource = async (req, res) => {
             await skill.save()
             res.status(200).json({ success: true })
       } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(400).json({ message: error })
       }
 }
@@ -169,7 +169,7 @@ export const editResource = async (req, res) => {
             await skill.save()
             res.status(200).json({singleResource})
        } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(400).json({message:error})
        }
 }
